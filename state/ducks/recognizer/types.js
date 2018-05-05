@@ -1,0 +1,1 @@
+export const IS_FACE_RECOGNIZED = 'IS_FACE_RECOGNIZED'
