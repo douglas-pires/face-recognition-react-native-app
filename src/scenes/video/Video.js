@@ -6,16 +6,29 @@ import { AppRegistry,
   TouchableOpacity,
   View } from 'react-native'
 import { RNCamera } from 'react-native-camera'
+import { recognizerOperations } from '../../state/ducks/recognizer';
+import { connect } from 'react-redux'
 
-export default class Video extends Component {
+class Video extends Component {
   
-  async faceIsDetected () {
-    const data = await this.camera.takePictureAsync({ base64: true, quality: 0.5, width: 500 })
+  constructor () {
+    super ()
+    this.batch = []
+  }
 
+  async faceIsDetected () {
+    if (this.batch.length < 10) {
+
+      await this.camera.takePictureAsync({ base64: true, quality: 0.5, width: 500 }).then(result => {
+        this.batch.push(result)
+      })
+    }
+    console.log(this.batch)
+    if (!this.props.isThereAnyFace) this.props.isFaceRecognized(true)
   }
   render () {
     return (
-      <View style={styles.container}>
+      <View style={!this.props.isThereAnyFace ? styles.container : styles.container_diminished }>
         {/* <View style={{flex: 0, flexDirection: 'row', justifyContent: 'center',}}>
           <TouchableOpacity
               // onPress={}
@@ -49,6 +62,13 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#fff'
   },
+  container_diminished: {
+    flex: 1,
+    width: Dimensions.get('window').width,
+    height: 200,
+    flexDirection: 'column',
+    backgroundColor: '#fff'
+  },
   preview: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -64,3 +84,13 @@ const styles = StyleSheet.create({
     margin: 20
   }
 });
+
+const mapStateToProps = (state) => ({
+  isThereAnyFace: state.recognizer.isFaceRecognized
+})
+
+const mapDispatchToProps = {
+  isFaceRecognized: recognizerOperations.isFaceRecognized
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Video)
