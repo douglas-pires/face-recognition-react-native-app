@@ -8,6 +8,7 @@ import { AppRegistry,
 import { RNCamera } from 'react-native-camera'
 import { recognizerOperations } from '../../state/ducks/recognizer';
 import { connect } from 'react-redux'
+import { postRecognizer } from '../../services/recoginzer.routes';
 
 class Video extends Component {
   
@@ -17,26 +18,36 @@ class Video extends Component {
   }
 
   async faceIsDetected () {
-    if (this.batch.length < 10) {
+    if (this.batch.length <= 10) {
 
       await this.camera.takePictureAsync({ base64: true, quality: 0.5, width: 500 }).then(result => {
         this.batch.push(result)
+        if (this.batch.length === 1) {
+          postRecognizer(this.batch[0])
+          //this.props.sendingBatchToServer()
+        }
+
+        if (this.batch.length === 10) {
+          postRecognizer(this.batch).then((result) => {
+            console.log(result)
+          })
+        }
       })
     }
-    console.log(this.batch)
     if (!this.props.isThereAnyFace) this.props.isFaceRecognized(true)
   }
+
+  renderCollectingSamplesView () {
+    return (
+      <View style={styles.auxiliaryViews}>
+        <Text>Coletando amostras...</Text>
+      </View>
+    )
+  }
+
   render () {
     return (
-      <View style={!this.props.isThereAnyFace ? styles.container : styles.container_diminished }>
-        {/* <View style={{flex: 0, flexDirection: 'row', justifyContent: 'center',}}>
-          <TouchableOpacity
-              // onPress={}
-              style = {styles.capture}
-          >
-              <Text style={{fontSize: 14}}> SNAP </Text>
-          </TouchableOpacity>
-        </View> */}
+      <View style={styles.container}>
         <RNCamera
             ref={ref => {
               this.camera = ref;
@@ -50,6 +61,7 @@ class Video extends Component {
             faceDetectionLandmarks={RNCamera.Constants.FaceDetection.Landmarks.all}
             onFacesDetected={ () => this.faceIsDetected() }
         />
+        { this.props.isThereAnyFace ? this.renderCollectingSamplesView() : <View></View> }
       </View>
     )
   }
@@ -62,27 +74,17 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#fff'
   },
-  container_diminished: {
-    flex: 1,
-    width: Dimensions.get('window').width,
-    height: 200,
-    flexDirection: 'column',
-    backgroundColor: '#fff'
-  },
   preview: {
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center'
   },
-  capture: {
-    flex: 0,
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    padding: 15,
-    paddingHorizontal: 20,
-    alignSelf: 'center',
-    margin: 20
+  auxiliaryViews: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
+
 });
 
 const mapStateToProps = (state) => ({

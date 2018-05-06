@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { View, StyleSheet } from 'react-native'
-import Video from './video/Video'
+import Video from '@/components/video/Video'
 
 export default class Main extends Component {
 
