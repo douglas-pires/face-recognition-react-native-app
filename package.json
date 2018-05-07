@@ -3,14 +3,18 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "start": "cross-env NODE_ENV=development node node_modules/react-native/local-cli/cli.js start",
     "test": "jest"
   },
   "dependencies": {
+    "axios": "^0.18.0",
+    "cross-env": "^5.1.4",
     "react": "16.3.1",
     "react-native": "0.55.3",
     "react-native-camera": "^1.1.2",
+    "react-native-elements": "^0.19.1",
     "react-native-router-flux": "^4.0.0-beta.28",
+    "react-native-vector-icons": "^4.6.0",
     "react-redux": "^5.0.7",
     "react-thunk": "^1.0.0",
     "redux": "^4.0.0",

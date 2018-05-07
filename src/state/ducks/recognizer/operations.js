@@ -1,7 +1,13 @@
 import {
-  isFaceRecognized
+  isFaceRecognized,
+  isFaceDetected,
+  sendingBatchToServer,
+  sendRecognizerResult
 } from './actions'
 
 export {
-  isFaceRecognized
+  isFaceRecognized,
+  isFaceDetected,
+  sendingBatchToServer,
+  sendRecognizerResult
 }

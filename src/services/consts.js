@@ -1,1 +1,1 @@
-export const baseURL = process.env.NODE_ENV === 'development' ? 'http://localhost:4000' : 'https://fr.api.douglaspires.com'
+export const baseURL = process.env.NODE_ENV === 'development' ? 'http://192.168.1.37:4000' : 'https://fr.api.douglaspires.com'
