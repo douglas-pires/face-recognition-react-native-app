@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { View, Text } from 'react-native'
-import { Card, ListItem } from 'react-native-elements'
+import { Card, ListItem, Button } from 'react-native-elements'
+import { Actions } from 'react-native-router-flux';
 
 export default class User extends Component {
+
   render () {
-    console.log(this.props.face)
     return (
       <Card title="Informações do Usuário">
         <ListItem

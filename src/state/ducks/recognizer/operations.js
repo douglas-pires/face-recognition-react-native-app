@@ -2,12 +2,20 @@ import {
   isFaceRecognized,
   isFaceDetected,
   sendingBatchToServer,
-  sendRecognizerResult
+  sendRecognizerResult,
+  saveBatchInMemory,
+  defaultState,
+  setTraining,
+  isTrained
 } from './actions'
 
 export {
   isFaceRecognized,
   isFaceDetected,
   sendingBatchToServer,
-  sendRecognizerResult
+  sendRecognizerResult,
+  saveBatchInMemory,
+  defaultState,
+  setTraining,
+  isTrained
 }

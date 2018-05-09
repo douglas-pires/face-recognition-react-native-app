@@ -10,35 +10,37 @@ import { RNCamera } from 'react-native-camera'
 import { recognizerOperations } from '@/state/ducks/recognizer'
 import { connect } from 'react-redux'
 import { postRecognizer } from '@/services/recoginzer.routes'
-import { ListItem } from 'react-native-elements'
+import { ListItem, Button } from 'react-native-elements'
 import { Actions } from 'react-native-router-flux'
 
 class Video extends Component {
   
-  constructor () {
-    super ()
-    this.batch = []
-  }
-
   async faceIsDetected () {
-    if (this.batch.length <= 10) {
+    if (this.props.batch.length <= 10) {
 
-      await this.camera.takePictureAsync({ base64: true, quality: 0.5, width: 500 }).then(result => {
-        this.batch.push(result.base64)
-        if (this.batch.length === 1) {
-          this.props.sendingBatchToServer(true)
-          postRecognizer(this.batch).then(result => {
-            this.props.sendRecognizerResult(result.data)
-            this.props.isFaceRecognized(true)
-          })
-        }
+      let photo = await this.camera.takePictureAsync({ base64: true, quality: 0.5, width: 500 })
+      this.props.saveBatchInMemory(photo)
 
-        if (this.batch.length === 10) {
-          postRecognizer(this.batch).then((result) => {
-            this.props.sendRecognizerResult(result.data)
-          })
+      if (this.props.batch.length === 1) {
+        this.props.sendingBatchToServer(true)
+        let singlePhoto = [this.props.batch[0].base64]
+        let recognizerResult = await postRecognizer(singlePhoto)
+        this.props.sendRecognizerResult(recognizerResult.data)
+        this.props.isFaceRecognized(true)
+      }
+
+      if (this.props.batch.length === 10) {
+        for (let i = 0; i < this.props.batch.length; i++) {
+          let actPhoto = []
+          actPhoto.push(this.props.batch[i].base64)
+          let postPhoto = this.props.batch[i + 1] === undefined ? [] : this.props.batch[i + 1].base64
+
+          if (postPhoto.length !== 0) actPhoto.push(postPhoto)
+          let recognizerResult = await postRecognizer(actPhoto)
+          this.props.sendRecognizerResult(recognizerResult.data)
+          i = i + 1
         }
-      })
+      }
     }
     if (!this.props.isThereAnyFace) this.props.isFaceDetected(true)
   }
@@ -64,20 +66,31 @@ class Video extends Component {
   }
 
   renderRecognizerResult () {
-
     return (
       <ScrollView>
-        {this.props.recognizerResult.map(face => {
+        {this.props.recognizerAverage.map(face => {
           return (
             <ListItem
               key={Math.random()}
               title={`Nome: ${face.className}`}
               subtitle={`A distância de: ${face.distance}`}
               onPress={ () => this.handlePress(face) }
+              chevron
             />
           )  
         })}
       </ScrollView>
+    )
+  }
+
+  renderRegisterButton () {
+    return (
+      <View>
+        <Button 
+          title="Registrar"
+          onPress={ () => Actions.register() }
+        />
+      </View>
     )
   }
 
@@ -99,7 +112,8 @@ class Video extends Component {
         />
         { this.props.isThereAnyFace && !this.props.isBatchSent ? this.renderCollectingSamplesView() : <View></View> }
         { this.props.isBatchSent && !this.props.isRecognized ? this.renderBatchWasSent() : <View></View> }
-        { this.props.isRecognized ? this.renderRecognizerResult() : <View></View> }
+        { this.props.isRecognized ? this.renderRecognizerResult() : <View></View> } 
+        { this.props.isRecognized ? this.renderRegisterButton() : <View></View> } 
       </View>
     )
   }
@@ -133,14 +147,17 @@ const mapStateToProps = (state) => ({
   isThereAnyFace: state.recognizer.isFaceRecognized,
   isRecognized: state.recognizer.isFaceRecognized,
   isBatchSent: state.recognizer.isBatchSent,
-  recognizerResult: state.recognizer.recognizerResult
+  recognizerResult: state.recognizer.recognizerResult,
+  recognizerAverage: state.recognizer.recognizerAverage,
+  batch: state.recognizer.batch
 })
 
 const mapDispatchToProps = {
   isFaceDetected: recognizerOperations.isFaceDetected,
   isFaceRecognized: recognizerOperations.isFaceRecognized,
   sendingBatchToServer: recognizerOperations.sendingBatchToServer,
-  sendRecognizerResult: recognizerOperations.sendRecognizerResult
+  sendRecognizerResult: recognizerOperations.sendRecognizerResult,
+  saveBatchInMemory: recognizerOperations.saveBatchInMemory
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Video)
