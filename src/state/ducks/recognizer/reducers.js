@@ -30,10 +30,11 @@ const recognizerReducer = createReducer(initialState)({
     let classNames = []
     let realPayload = []
     let sum = 0
+    let divideFactor = 0
     // get classNames with no duplicate... We can replace with guid numbers or whatever
     for (let i = 0; i < result.length; i++) {
       if (!classNames.length && result[i].className !== undefined) classNames.push(result[i].className)
-      if (classNames.length > 0) {
+      if (!!classNames.length) {
         for (let j = 0; j < classNames.length; j++) {
           if (classNames[j] !== result[i].className && result[i].className !== undefined) {
             classNames.push(result[i].className)
@@ -41,19 +42,24 @@ const recognizerReducer = createReducer(initialState)({
         }
       }
     }
+
+    classNames = Array.from(new Set(classNames))
+
     // iterate throught distances, sum it and get average
     for (let j = 0; j < classNames.length; j++) {
       for (let i = 0; i < result.length; i++) {
         if (classNames[j] === result[i].className) {
           sum += result[i].distance
+          divideFactor += 1
         }
       }
       realPayload.push({
         className: classNames[j],
-        distance: parseFloat(sum / result.length).toFixed(2)
+        distance: parseFloat(sum / divideFactor).toFixed(2)
       })
+      sum = 0
+      divideFactor = 0
     }
-
     return { ...state,
       recognizerResult: state.recognizerResult.concat(action.payload),
       recognizerAverage: state.recognizerAverage = realPayload
