@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Alert, Text, Animated, Image, Easing, ActivityIndicator } from 'react-native'
+import { View, StyleSheet, Alert, Text, ActivityIndicator } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { Input, Button, Card, Avatar } from 'react-native-elements'
@@ -11,16 +11,13 @@ class Register extends Component {
   constructor () {
     super ()
     this.state = {
-      username: ''
+      username: '',
+      disableRegisterButton: false
     }
-    this.spinValue = new Animated.Value(0)
-  }
-
-  componentDidMount () {
-    this.spin()
   }
 
   register () {
+    this.setState({disableRegisterButton: true})
     const data = {
       batch: this.props.batch.map(arr => arr.base64),
       metadata: { name: this.state.username }
@@ -57,33 +54,10 @@ class Register extends Component {
     )
   }
 
-  spin () {
-    this.spinValue.setValue(0)
-    Animated.timing(
-      this.spinValue,
-      {
-        toValue: 1,
-        duration: 4000,
-        easing: Easing.linear
-      }
-    ).start(() => this.spin())
-  }
-
   renderIsTraining () {
-    const spin = this.spinValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['0deg', '360deg']
-    })
     return (
       <View>
         <View style={styles.container}>
-          {/* <Animated.Image
-            style={{
-              width: 227,
-              height: 200,
-              transform: [{rotate: spin}] }}
-              source={{uri: 'https://cdn2.iconfinder.com/data/icons/picons-basic-2/57/basic2-090_loader_loading-512.png'}}
-          /> */}
           <ActivityIndicator
             size="large"
             color="#0000ff"/>
@@ -118,6 +92,7 @@ class Register extends Component {
           <Button
             title="Registrar"
             onPress={ () => this.register() }
+            disabled={this.state.disableRegisterButton}
           />
         </Card>
         
