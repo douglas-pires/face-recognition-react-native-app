@@ -107,7 +107,6 @@ class Video extends Component {
             flashMode={RNCamera.Constants.FlashMode.off}
             permissionDialogTitle={'Permission to use camera'}
             permissionDialogMessage={'We need your permission to use your camera phone'}
-            faceDetectionLandmarks={RNCamera.Constants.FaceDetection.Landmarks.all}
             onFacesDetected={ () => this.faceIsDetected() }
         />
         { this.props.isThereAnyFace && !this.props.isBatchSent ? this.renderCollectingSamplesView() : <View></View> }
