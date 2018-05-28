@@ -56,7 +56,9 @@ class Video extends Component {
   renderBatchWasSent () {
     return (
       <View style={styles.auxiliaryViews}>
-        <Text>Reconhecendo o rosto</Text>
+        <Text style={{
+          textAlign: 'center',
+        }}>Reconhecendo o rosto</Text>
       </View>
     )
   }
@@ -67,25 +69,27 @@ class Video extends Component {
 
   renderRecognizerResult () {
     return (
-      <ScrollView>
-        {this.props.recognizerAverage.map(face => {
-          return (
-            <ListItem
-              key={Math.random()}
-              title={`Nome: ${face.className}`}
-              subtitle={`A distância de: ${face.distance}`}
-              onPress={ () => this.handlePress(face) }
-              chevron
-            />
-          )  
-        })}
-      </ScrollView>
+      <View style={styles.auxiliaryViews}>
+        <ScrollView>
+          {this.props.recognizerAverage.map(face => {
+            return (
+              <ListItem
+                key={Math.random()}
+                title={`Nome: ${face.className}`}
+                subtitle={`A distância de: ${face.distance}`}
+                onPress={ () => this.handlePress(face) }
+                chevron
+              />
+            )  
+          })}
+        </ScrollView>
+      </View>
     )
   }
 
   renderRegisterButton () {
     return (
-      <View>
+      <View style={styles.auxiliaryViews}>
         <Button 
           title="Registrar"
           onPress={ () => Actions.register() }
@@ -133,11 +137,21 @@ const styles = StyleSheet.create({
   auxiliaryViews: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
-  },
+    position: 'absolute',
+    alignSelf: 'center',
+    bottom: 30,
+    width: 300,
+    height: 70,
+    backgroundColor: '#FFF'
+ },
   result: {
     display: 'flex',
     flexDirection: 'row'
+  },
+  overlay: {
+    position: 'absolute',
+    bottom: 300,
+    backgroundColor: '#fff'
   }
 
 });
