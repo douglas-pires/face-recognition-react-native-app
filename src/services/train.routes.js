@@ -1,12 +1,12 @@
 import axios from 'axios'
-import { baseURL } from './consts'
+import { baseURL, baseTrainUrl } from './consts'
 
-const trainURL = `${baseURL}/trainer`
+const trainUrl = `${baseTrainUrl}/trainer`
 
 export const getTrain = () => {
-  return axios.get(trainURL)
+  return axios.get(trainUrl)
 }
 
 export const postTrain = (data) => {
-  return axios.post(trainURL, data)
+  return axios.post(trainUrl, data)
 }
