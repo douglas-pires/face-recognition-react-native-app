@@ -47,7 +47,7 @@ class Video extends Component {
 
   renderCollectingSamplesView () {
     return (
-      <View style={styles.auxiliaryViews}>
+      <View style={styles.regularViews}>
         <Text>Coletando amostras...</Text>
       </View>
     )
@@ -55,7 +55,7 @@ class Video extends Component {
 
   renderBatchWasSent () {
     return (
-      <View style={styles.auxiliaryViews}>
+      <View style={styles.regularViews}>
         <Text style={{
           textAlign: 'center',
         }}>Reconhecendo o rosto</Text>
@@ -69,20 +69,23 @@ class Video extends Component {
 
   renderRecognizerResult () {
     return (
-      <View style={styles.auxiliaryViews}>
-        <ScrollView>
-          { this.props.recognizerAverage.map(face => {
-            return (
-              <ListItem
-                key={Math.random()}
-                title={`Nome: ${face.className}`}
-                subtitle={`A distância de: ${face.distance}`}
-                onPress={ () => this.handlePress(face) }
-                chevron
-              />
-            )  
-          }) }
-        </ScrollView>
+      <View styles={styles.groupContainerResult}>
+          <ScrollView style={styles.scrollView}>
+            { this.props.recognizerAverage.map(face => {
+              return (
+                <ListItem
+                  key={Math.random()}
+                  title={`Nome: ${face.className}`}
+                  subtitle={`A distância de: ${face.distance}`}
+                  onPress={ () => this.handlePress(face) }
+                  chevron
+                />
+              )  
+            }) }
+          </ScrollView>
+        <View style={styles.roundButtonContainer}>
+          { this.props.isRecognized ? this.renderRegisterButton() : <View></View> } 
+        </View>
       </View>
     )
   }
@@ -90,10 +93,6 @@ class Video extends Component {
   renderRegisterButton () {
     return (
       <View style={styles.registerButton}>
-        {/* <Button 
-          title={'Registrar'}
-          onPress={ () => Actions.register() }
-        /> */}
          <TouchableOpacity
           style={{
               alignItems: 'center',
@@ -129,7 +128,6 @@ class Video extends Component {
         { this.props.isThereAnyFace && !this.props.isBatchSent ? this.renderCollectingSamplesView() : <View></View> }
         { this.props.isBatchSent && !this.props.isRecognized ? this.renderBatchWasSent() : <View></View> }
         { this.props.isRecognized ? this.renderRecognizerResult() : <View></View> } 
-        { this.props.isRecognized ? this.renderRegisterButton() : <View></View> } 
       </View>
     )
   }
@@ -137,7 +135,7 @@ class Video extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     width: Dimensions.get('window').width,
     flexDirection: 'column',
     backgroundColor: '#fff'
@@ -147,35 +145,53 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center'
   },
-  auxiliaryViews: {
+  regularViews: {
     flex: 1,
     justifyContent: 'center',
     position: 'absolute',
-    alignSelf: 'center',
-    bottom: 25,
-    left: 25,
-    width: 230,
-    height: 70,
+    width: '80%',
+    height: 100,
+    bottom: '5%',
+    left: '10%',
     backgroundColor: '#FFF'
- },
+  },
+  groupContainerResult: {
+    flex: 1,
+    justifyContent: 'center',
+    position: 'absolute',
+    width: '80%',
+    left: '10%',
+  },
+  scrollView: {
+    flexGrow: 1,
+    position: 'absolute',
+    bottom: '5%',
+    marginLeft: '10%',
+    marginRight: '10%',
+    maxHeight: 100,
+    marginBottom: '5%',
+    width: '80%'
+  },
+  roundButtonContainer: {
+    // width: '100%'
+  },
   result: {
     display: 'flex',
     flexDirection: 'row'
-  },
-  overlay: {
-    position: 'absolute',
-    bottom: 300,
-    backgroundColor: '#fff'
   },
   registerButton: {
     flex: 1,
     justifyContent: 'center',
     position: 'absolute',
     alignSelf: 'center',
-    bottom: 25,
-    right: 25,
+    bottom: 120,
+    right: 30,
+  },
+  overlay: {
+    position: 'absolute',
+    bottom: 300,
+    backgroundColor: '#fff'
   }
-
 });
 
 const mapStateToProps = (state) => ({
