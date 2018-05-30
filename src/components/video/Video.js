@@ -10,7 +10,7 @@ import { RNCamera } from 'react-native-camera'
 import { recognizerOperations } from '@/state/ducks/recognizer'
 import { connect } from 'react-redux'
 import { postRecognizer } from '@/services/recoginzer.routes'
-import { ListItem, Button } from 'react-native-elements'
+import { ListItem, Button, Icon } from 'react-native-elements'
 import { Actions } from 'react-native-router-flux'
 
 class Video extends Component {
@@ -71,7 +71,7 @@ class Video extends Component {
     return (
       <View style={styles.auxiliaryViews}>
         <ScrollView>
-          {this.props.recognizerAverage.map(face => {
+          { this.props.recognizerAverage.map(face => {
             return (
               <ListItem
                 key={Math.random()}
@@ -81,7 +81,7 @@ class Video extends Component {
                 chevron
               />
             )  
-          })}
+          }) }
         </ScrollView>
       </View>
     )
@@ -89,11 +89,24 @@ class Video extends Component {
 
   renderRegisterButton () {
     return (
-      <View style={styles.auxiliaryViews}>
-        <Button 
-          title="Registrar"
+      <View style={styles.registerButton}>
+        {/* <Button 
+          title={'Registrar'}
           onPress={ () => Actions.register() }
-        />
+        /> */}
+         <TouchableOpacity
+          style={{
+              alignItems: 'center',
+              backgroundColor: '#0097e6',
+              justifyContent:'center',
+              width: 60,
+              height: 60,
+              borderRadius: 100,
+            }}
+            onPress={ () => Actions.register() }
+        >
+          <Icon name={"add"}  size={30} color="#fff" />
+        </TouchableOpacity>
       </View>
     )
   }
@@ -139,8 +152,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'absolute',
     alignSelf: 'center',
-    bottom: 30,
-    width: 300,
+    bottom: 25,
+    left: 25,
+    width: 230,
     height: 70,
     backgroundColor: '#FFF'
  },
@@ -152,6 +166,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 300,
     backgroundColor: '#fff'
+  },
+  registerButton: {
+    flex: 1,
+    justifyContent: 'center',
+    position: 'absolute',
+    alignSelf: 'center',
+    bottom: 25,
+    right: 25,
   }
 
 });
