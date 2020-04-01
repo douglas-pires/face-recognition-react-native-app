@@ -9,7 +9,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "cross-env": "^5.1.4",
-    "native-base": "^2.4.3",
+    "native-base": "^2.6.1",
     "react": "16.3.1",
     "react-native": "0.55.3",
     "react-native-camera": "^1.1.2",
